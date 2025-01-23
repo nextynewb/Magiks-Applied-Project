@@ -37,3 +37,15 @@ Example:
 Macbook Pro: https://search.mudah.my/v1/search?q=macbook%20pro
 Macbook Air: https://search.mudah.my/v1/search?q=macbook%20air
 """
+
+
+import requests
+
+TELEGRAM_API = '7500850112:AAHZGnF83amv0bsBC0gSLuBTjyuteK7faIg'
+CHAT_ID = 'YOUR_CHAT_ID'
+
+def send_message(text):
+    url = f'https://api.telegram.org/bot{TELEGRAM_API}/sendMessage'
+    params = {'chat_id': CHAT_ID, 'text': text}
+    requests.post(url, params=params)
+

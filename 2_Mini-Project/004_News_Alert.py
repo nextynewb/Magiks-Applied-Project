@@ -28,11 +28,23 @@ Optional Enhancements:
 - Log news updates for future reference.
 - Use try-except to handle API errors gracefully.
 - Add a mechanism to stop the loop after a certain number of checks or based on user input.
-"""
-
-ENDPOINT = 'https://theedgemalaysia.com/api/loadMoreCategories?offset=0&categories=malaysia'
 
 
+API Endpoint: https://theedgemalaysia.com/api/loadMoreCategories?offset=0&categories=malaysia
+    - This API gives latest 10 data from the news category 'malaysia'.
+    - You can change the offset to get more data.
+    - offset=0 gives the latest data.
+    - offset=10 gives the next 10 data.
+
 """
-The URL will give 10 news data. Starting from offset - 10
-"""
+
+import requests
+
+TELEGRAM_API = '7500850112:AAHZGnF83amv0bsBC0gSLuBTjyuteK7faIg'
+CHAT_ID = 'YOUR_CHAT_ID'
+
+def send_message(text):
+    url = f'https://api.telegram.org/bot{TELEGRAM_API}/sendMessage'
+    params = {'chat_id': CHAT_ID, 'text': text}
+    requests.post(url, params=params)
+
