@@ -61,15 +61,38 @@ students = [
 """
 (1): Print the name of the sttudent who have graduated
 """
+for student in students:
+    if student['graduated']:
+        print(student['name'])
+
 
 """
 (2): Calculate total credits for each of the student and store the value
 """
-
+for student in students:
+    courses = student['courses']
+    total_credits = 0
+    for key, value in courses.items():
+        total_credits = total_credits + value['credits']
+    student['total_credits'] = total_credits
+    print(student)
 """
 (3): Add Coding Club to extracurricular_activities for non-graduated students
 """
 
+for student in students:
+    if not student['graduated']:
+        student['extracurricular_activities'].append('Coding Club')
+        print(student['extracurricular_activities'])
+
 """
 (4): Filter students joined Chess Club
 """
+
+filtered_student = []
+for student in students:
+    for activity in student['extracurricular_activities']:
+        if activity=='Chess Club':
+            filtered_student.append(student)
+
+print(filtered_student)
