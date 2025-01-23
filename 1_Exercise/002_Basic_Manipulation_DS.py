@@ -66,22 +66,36 @@ employees = [
         "promoted": True
     }
 ]
+#structure,list,dictionary
 
 """
 (1) Print the name of each employee who has been promoted
 """
-
+for employee in employees:
+    employee_name = employee['name']
+    print(employee_name)
 
 """
 (2) Calculate Average Score of each employee and store it in ['average_score']
 """
-
+for employee in employees:
+    performance = employee['performance']
+    total_score = 0
+    for key, value in performance.items():
+        score = value['score']
+        total_score = total_score + score
+    average_score = total_score/len(employee["performance"])
+    employee['average_score'] = average_score
 
 """
 (3) Update the skillset for employees in the "Product" department
 """
-
+for employee in employees:
+    if employee['department'] == "Product":
+        employee['skills'].append("Leadership")
 
 """
 (4) Filter employees based on performance
 """
+for employee in employees:
+    print(f"{employee['name']}: {employee['average_score']}")
