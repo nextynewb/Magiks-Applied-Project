@@ -48,6 +48,7 @@ f'https://api.mybitx.com/api/1/ticker?pair={symbol}MYR'
 """
 
 import requests
+import time
 
 TELEGRAM_API = '7500850112:AAHZGnF83amv0bsBC0gSLuBTjyuteK7faIg'
 CHAT_ID = 'YOUR_CHAT_ID'
@@ -57,3 +58,40 @@ def send_message(text):
     params = {'chat_id': CHAT_ID, 'text': text}
     requests.post(url, params=params)
 
+
+cryptocurrencies = {
+    'XRP' : {
+        'lower_bound' : 25000,
+        'upper_bound' : 30000
+    },
+    'ETH' : {
+        'lower_bound' : 1500,
+        'upper_bound' : 2000
+    },
+    'SOL' : {
+        'lower_bound' : 1000,
+        'upper_bound' : 2000
+    }
+}
+
+
+def get_crypto(symbol):
+    url = f'https://api.mybitx.com/api/1/ticker?pair={symbol}MYR'
+    response = requests.get(url)
+    if response.status_code == 200:
+        return float(response.json()["last_trade"])
+    else:
+        return None
+
+while True: 
+    time.sleep(1)
+    for key, value in cryptocurrencies.items():
+        price = get_crypto(key)
+        lower_bound = value['lower_bound']
+        upper_bound = value['upper_bound']
+        print('-------')
+        print(f'{key} price = {price}')
+        print(f'lower_bound = {lower_bound}')
+        print(f'upper_bound = {upper_bound}')
+        if price is not None and price > lower_bound and price < upper_bound:
+            send_message(f'{key} + buy now')
