@@ -40,32 +40,6 @@ Macbook Air: https://search.mudah.my/v1/search?q=macbook%20air
 
 
 import requests
-import json
-
-api_url = f'https://search.mudah.my/v1/search?q={product_name}'
-alerts = []
-
-
-def get_listing_mudah(api_url):
-    response = requests.get(api_url)
-    if response.status_code == 200:
-        data = response.json()
-        alerts.extend(data)
-    else:
-        print("Failed to get data from the API")
-
-def get_latest_listing(alerts):
-    for alert in alerts:
-        return()
-    
-while True:
-    product_name = "Macbook"
-    response = requests.get(f'https://search.mudah.my/v1/search?q={product_name}')
-    print(response.json())
-
-
-import requests
-import json
 import time
 
 TELEGRAM_API = '7500850112:AAHZGnF83amv0bsBC0gSLuBTjyuteK7faIg'
@@ -76,45 +50,53 @@ def send_message(text):
     params = {'chat_id': CHAT_ID, 'text': text}
     requests.post(url, params=params)
 
-alert_products = [
-    "Macbook Pro", "PS5"
+alerts = [
+    {
+        "name" : "Macbook Pro",
+        "price" : 5000
+    },
+    {
+        "name" : "Macbook Air",
+        "price" : 4000
+    }
 ]
 
 
-all_items = []
+ad_urls = []
+#get_adview_url
 
-for item in alert_products:
-    product_name = item
-    response = requests.get(f'https://search.mudah.my/v1/search?q={product_name}')
-    data = response.json()['data']
+def get_adview_url(product_name):
+    url = f'https://search.mudah.my/v1/search?q={product_name}'
+    response = requests.get(url)
+    if response.status_code == 200:
+        data = response.json()['data']
+        for x in data:
+            adview_url = x['attributes']['adview_url']
+            if adview_url not in ad_urls:
+                ad_urls.append(adview_url)
+                return(adview_url)
+    return None
 
-    for x in data:
-        url = x['attributes']['adview_url']
-        all_items.append(url)
+def get_price(product_name):
+    url = f'https://search.mudah.my/v1/search?q={product_name}'
+    response = requests.get(url)
+    if response.status_code==200:
+        data = response.json()['data']
+        for x in data:
+                price = x['attributes']['price']
+                return(price)
+    return None
+
 
 while True:
-    for item in alert_products:
-        product_name = item
-        response = requests.get(f'https://search.mudah.my/v1/search?q={product_name}')
-        data = response.json()['data']
-
-        for x in data:
-            url = x['attributes']['adview_url']
-            if url in all_items:
-                continue
-            else:
-                print(url)
-                print('-----')
+    time.sleep(1)
+    for item in alerts:
+        watchlist = item['name']
+        listing_price = get_price(watchlist)
+        ad_url = get_adview_url(watchlist)
+        alert_price = item['price']
+        if listing_price < alert_price:
+            print('-----')
+            print(listing_price)
+            print(f'buy {watchlist} at {ad_url} ----')
         
-    time.sleep(10)
-
-
-
-TELEGRAM_API = '7500850112:AAHZGnF83amv0bsBC0gSLuBTjyuteK7faIg'
-CHAT_ID = 'YOUR_CHAT_ID'
-
-def send_message(text):
-    url = f'https://api.telegram.org/bot{TELEGRAM_API}/sendMessage'
-    params = {'chat_id': CHAT_ID, 'text': text}
-    requests.post(url, params=params)
-
