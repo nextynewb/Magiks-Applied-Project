@@ -65,16 +65,37 @@ customers = [
 """
 (1): Print the name of each customer who is a VIP member
 """
+for customer in customers:
+    if customer["vip_member"] ==  True:
+        name = customer["name"]
+        print(name)
 
 """
 (2): Calculate the total amount spent by each customer and store it in 'total_spent'
 """
+for customer in customers:
+    total_spent = 0
+    for order in customer['order_history']:
+        spent = order["amount"]
+        total_spent += spent
+    customer['total_spent'] = total_spent
+
 
 """
 (3) Check if any customer has placed more than 5 orders
 """
-
+for customer in customers:
+    if len(customer['order_history']) > 5:
+        print(f"customer {customer['name']} is a frequent shopper")
+    
 """
 (4) Update the preferences for customers who have spent more than $1000
 """
+for customer in customers:
+    if customer['total_spent'] > 1000:
+        customer["preferences"].append("exclusive discount")
+    else:
+        continue
+    print(f"{customer['name']} : {customer['preferences']}")
+        
 
