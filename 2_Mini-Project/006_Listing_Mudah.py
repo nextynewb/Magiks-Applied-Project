@@ -1,4 +1,3 @@
-
 """
 Mini Project (3): Mudah Listing Alert
 
@@ -50,7 +49,41 @@ def send_message(text):
     params = {'chat_id': CHAT_ID, 'text': text}
     requests.post(url, params=params)
 
-alerts = [
+products = [["Macbook Pro",6000.0], ["Macbook Air",4000.0]]
+ad_url = []
+
+
+def get_data(product):
+    url = f'https://search.mudah.my/v1/search?q={product}'
+    try:
+        response = requests.get(url)
+        if response.status_code == 200:
+            data = response.json()['data']
+            for attribute in data:
+                price = float(attribute['attributes']['price'])
+                ad_view = attribute['attributes']['adview_url']
+                if ad_view in ad_url:
+                    continue
+                else:
+                    ad_url.append(ad_view)
+                    return price,ad_view
+    except:
+        print("There is an error fetching data from Mudah.my")
+        return None, None
+
+while True:
+    time.sleep(1)
+    for item in products:
+        product = item[0]
+        data_from_mudah = get_data(product)
+        price_listing,ad_listing = data_from_mudah
+        price_alert = item[1]
+        if price_list < price_alert:
+            print(f"Yo! you should buy {product} with price {price_listing} at {ad_listing}")
+
+
+
+"""alerts = [
     {
         "name" : "Macbook Pro",
         "price" : 5000
@@ -59,10 +92,10 @@ alerts = [
         "name" : "Macbook Air",
         "price" : 4000
     }
-]
+]"""
 
 
-ad_urls = []
+"""ad_urls = []
 #get_adview_url
 
 def get_adview_url(product_name):
@@ -99,4 +132,4 @@ while True:
             print('-----')
             print(listing_price)
             print(f'buy {watchlist} at {ad_url} ----')
-        
+        """
