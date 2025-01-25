@@ -71,3 +71,80 @@ Table: Monthly Stock Market Performance Summary
 -------------------------------------------------------
 
 """
+import polars as pl
+import datetime as datetime
+
+def get_day(day_int):
+    day_dict = {
+        1:"Monday",
+        2:"Tuesday",
+        3:"Wednesday",
+        4:"Thursday",
+        5:"Friday",
+        6:"Saturday",
+        7:"Sunday"}
+    day = day_dict[day_int]
+    return day
+    
+
+df = pl.read_csv('/workspaces/Magiks-Applied-Project/3_Polars/dataset/stock_historical.csv')
+df = df.drop('High','Low','Volume')
+
+#null values
+null_count = df.null_count()
+print(null_count)
+
+#cast from str to datetime type
+df = df.with_columns(
+    pl.col('Date').str.strptime(pl.Datetime, format='%m/%d/%Y')
+)
+
+#get year,month,weekday from date
+df = df.with_columns(
+    pl.col('Date').dt.year().alias('Year'),
+    pl.col('Date').dt.month().alias('Month'),
+    pl.col('Date').dt.weekday().alias('Day of the Week')
+)
+
+df = df.with_columns(
+    pl.col("Day of the Week").map_elements(get_day, return_dtype=pl.Utf8)
+)
+
+"""print(df['Year'].value_counts)"""
+#there is a unique data from 1965 to 2021
+#aggregation percentage
+df = df.with_columns(
+    ((pl.col('Close') - pl.col('Open'))/pl.col('Open')*100).alias("Percentage")
+)
+
+#get aggregation group by year
+df_yoy = df.group_by('Year').agg(
+    pl.col('Percentage').mean().round(6).alias('Mean Percentage'),
+    pl.col("Percentage").max().round(6).alias("Highest Percentage")
+)
+
+df_mom = df.group_by('Month').agg(
+    pl.col("Percentage").mean().round(6).alias('Mean Percentage'),
+    pl.col("Percentage").max().round(6).alias("Highest Percentage")
+)
+
+df_dod = df.group_by('Day of the Week').agg(
+    pl.col("Percentage").mean().round(6).alias('Mean Percentage'),
+    pl.col("Percentage").max().round(6).alias("Highest Percentage")
+)
+
+
+yearly_table = df_yoy.sort(by='Mean Percentage')
+monthly_table = df_mom.sort(by="Mean Percentage", descending=True)
+daily_table = df_dod.sort(by="Mean Percentage", descending=True)
+
+
+
+print(yearly_table)
+
+print(daily_table)
+
+print(monthly_table)
+
+
+
