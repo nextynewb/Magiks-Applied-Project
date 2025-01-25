@@ -49,18 +49,31 @@ def send_message(text):
     params = {'chat_id': CHAT_ID, 'text': text}
     requests.post(url, params=params)
 
-news_collection = [742441, 742440, 742439, 742436, 742435, 742434, 742433, 742429, 742427, 742425, 742421, 742423, 742419, 742418, 742414, 742412, 742410, 742409, 742408, 742407, 742381, 742406, 742405, 742398, 742400, 742394, 742392, 742390]
+news_collection = []
 params = {
-"offset" : "0",
+"offset" : 0,
 "categories" : "malaysia"}
 
 url = "https://theedgemalaysia.com/api/loadMoreCategories?"
 
 
+for i in range (10,20):
+    params["offset"] = i
+    response = requests.get(url,params=params)
+    if response.status_code ==200:
+        try:
+            data = response.json()["results"]
+            for item in data:
+                news_id = item["nid"]
+                news_title = item["title"]
+                news_collection.append(news_id)
+        except:
+            print("Cannot fetch data")
+
+
 def get_news_data():
     for i in range (0,20):
-        params["offset"] = str(i)
-        offset = params["offset"]
+        params["offset"] = i
         response = requests.get(url,params=params)
         if response.status_code ==200:
             try:
@@ -69,23 +82,27 @@ def get_news_data():
                     news_id = item["nid"]
                     news_title = item["title"]
                     if news_id in news_collection:
-                        return news_id, news_title, False
                         continue
                     else:
                         news_collection.append(news_id)
                         return news_id, news_title, True
             except:
-                print("Cannot fetch data")    
+                print("Cannot fetch data")
+        return None, None, False
 
-
-while True:
-    time.sleep(1)
-    data_from_theedge = get_news_data()
-    news_id, news_title, new_news = data_from_theedge
-    if new_news == True:
-        print(f'New news, title: {news_title}')
-    else:
-        print(f'I am sorry, you have caught up with all the news')
+request_news = input("Do you want to get the new news? (Y/N)").capitalize()
+if request_news == "Y":
+    while True:
+        time.sleep(1)
+        data_from_theedge = get_news_data()
+        news_id, news_title, new_news = data_from_theedge
+        if new_news == True:
+            print(f'New news, title: {news_title}')
+        else:
+            print(f'I am sorry, you have caught up with all the news')
+            break
+else:
+    print(f'Understandable, you dont like to read')
 
 
 
@@ -112,5 +129,4 @@ while True:
 #thiknig if we only return news based on what we wanted, 
 
     
-
 
