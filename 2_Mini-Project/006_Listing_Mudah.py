@@ -78,20 +78,7 @@ while True:
         data_from_mudah = get_data(product)
         price_listing,ad_listing = data_from_mudah
         price_alert = item[1]
-        if price_list < price_alert:
+        if price_listing < price_alert:
             print(f"Yo! you should buy {product} with price {price_listing} at {ad_listing}")
-
-
-#Mistake 1
-"""alerts = [
-    {
-        "name" : "Macbook Pro",
-        "price" : 5000
-    },
-    {
-        "name" : "Macbook Air",
-        "price" : 4000
-    }
-]"""
 
 
