@@ -82,7 +82,7 @@ while True:
             print(f"Yo! you should buy {product} with price {price_listing} at {ad_listing}")
 
 
-
+#Mistake 1
 """alerts = [
     {
         "name" : "Macbook Pro",
@@ -95,41 +95,3 @@ while True:
 ]"""
 
 
-"""ad_urls = []
-#get_adview_url
-
-def get_adview_url(product_name):
-    url = f'https://search.mudah.my/v1/search?q={product_name}'
-    response = requests.get(url)
-    if response.status_code == 200:
-        data = response.json()['data']
-        for x in data:
-            adview_url = x['attributes']['adview_url']
-            if adview_url not in ad_urls:
-                ad_urls.append(adview_url)
-                return(adview_url)
-    return None
-
-def get_price(product_name):
-    url = f'https://search.mudah.my/v1/search?q={product_name}'
-    response = requests.get(url)
-    if response.status_code==200:
-        data = response.json()['data']
-        for x in data:
-                price = x['attributes']['price']
-                return(price)
-    return None
-
-
-while True:
-    time.sleep(1)
-    for item in alerts:
-        watchlist = item['name']
-        listing_price = get_price(watchlist)
-        ad_url = get_adview_url(watchlist)
-        alert_price = item['price']
-        if listing_price < alert_price:
-            print('-----')
-            print(listing_price)
-            print(f'buy {watchlist} at {ad_url} ----')
-        """
