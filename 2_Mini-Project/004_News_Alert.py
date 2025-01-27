@@ -39,6 +39,7 @@ API Endpoint: https://theedgemalaysia.com/api/loadMoreCategories?offset=0&catego
 """
 
 import requests
+import time
 
 TELEGRAM_API = '7500850112:AAHZGnF83amv0bsBC0gSLuBTjyuteK7faIg'
 CHAT_ID = 'YOUR_CHAT_ID'
@@ -47,4 +48,85 @@ def send_message(text):
     url = f'https://api.telegram.org/bot{TELEGRAM_API}/sendMessage'
     params = {'chat_id': CHAT_ID, 'text': text}
     requests.post(url, params=params)
+
+news_collection = []
+params = {
+"offset" : 0,
+"categories" : "malaysia"}
+
+url = "https://theedgemalaysia.com/api/loadMoreCategories?"
+
+
+for i in range (10,20):
+    params["offset"] = i
+    response = requests.get(url,params=params)
+    if response.status_code ==200:
+        try:
+            data = response.json()["results"]
+            for item in data:
+                news_id = item["nid"]
+                news_title = item["title"]
+                news_collection.append(news_id)
+        except:
+            print("Cannot fetch data")
+
+
+def get_news_data():
+    for i in range (0,20):
+        params["offset"] = i
+        response = requests.get(url,params=params)
+        if response.status_code ==200:
+            try:
+                data = response.json()["results"]
+                for item in data:
+                    news_id = item["nid"]
+                    news_title = item["title"]
+                    if news_id in news_collection:
+                        continue
+                    else:
+                        news_collection.append(news_id)
+                        return news_id, news_title, True
+            except:
+                print("Cannot fetch data")
+        return None, None, False
+
+request_news = input("Do you want to get the new news? (Y/N)").capitalize()
+if request_news == "Y":
+    while True:
+        time.sleep(1)
+        data_from_theedge = get_news_data()
+        news_id, news_title, new_news = data_from_theedge
+        if new_news == True:
+            print(f'New news, title: {news_title}')
+        else:
+            print(f'I am sorry, you have caught up with all the news')
+            break
+else:
+    print(f'Understandable, you dont like to read')
+
+
+
+
+#thinking of automate this daily
+#if the user can choose to get
+"""
+while True:
+    request_news = input("Do you want to get the new news? (Y/N)").capitalize()
+    if request_news == "Y":
+        time.sleep(1)
+        data_from_theedge = get_news_data()
+        news_id, news_title, new_news = data_from_theedge
+        if new_news == True:
+            print(f'New news, title: {news_title}')
+        else:
+            print(f'I am sorry, you have caught up with all the news')
+            break
+    else:
+        print("Thank you, please lmk if you want new news")
+        break
+    """
+#thinking if we can get the most of the data is political news? investment news?
+#thiknig if we only return news based on what we wanted, 
+
+    
 
