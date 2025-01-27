@@ -90,4 +90,3 @@ while True:
         if price > value['lower_bound'] and price < value['upper_bound']:
             send_message(key + ' buy now!')
         
-        

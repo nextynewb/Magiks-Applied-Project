@@ -99,6 +99,4 @@ for customer in customers:
     print(customer['total_spent'])
     if customer["total_spent"] > 1000:
         customer['preferences']='over spend'
-
 print(customer)
-
