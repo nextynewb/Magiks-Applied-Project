@@ -39,12 +39,39 @@ API Endpoint: https://theedgemalaysia.com/api/loadMoreCategories?offset=0&catego
 """
 
 import requests
+import json
 
 TELEGRAM_API = '7500850112:AAHZGnF83amv0bsBC0gSLuBTjyuteK7faIg'
 CHAT_ID = 'YOUR_CHAT_ID'
+
 
 def send_message(text):
     url = f'https://api.telegram.org/bot{TELEGRAM_API}/sendMessage'
     params = {'chat_id': CHAT_ID, 'text': text}
     requests.post(url, params=params)
 
+def get_result_current():
+    response = requests.get(f'https://theedgemalaysia.com/api/loadMoreCategories?offset=0&categories=malaysia')
+    response.raise_for_status()
+    response_result = response.json() 
+    result_list = response_result['results'] 
+    return result_list
+
+responses = []
+while True:
+    current_news = get_result_current()
+    print(current_news)
+    previous_news = responses
+
+    if current_news != previous_news:
+            send_message("got new news")
+            print(current_news)
+            print("got new")
+         
+    else:   
+            send_message("No news")
+            print("No New News.")
+    responses.append(current_news)
+
+    print("end")
+time.sleep(20)  
